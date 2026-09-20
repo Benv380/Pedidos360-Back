@@ -1,5 +1,6 @@
 package cl.duoc.pedidos360.pedidosservice.pedido;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,12 +21,24 @@ public class PedidosController {
     }
 
     @GetMapping("/ping")
-    public Map<String, String> ping(@AuthenticationPrincipal Jwt jwt) {
+    public Map<String, Object> ping(@AuthenticationPrincipal Jwt jwt) {
         String usuario = jwt.getClaimAsString("name") != null
                 ? jwt.getClaimAsString("name")
                 : jwt.getSubject();
 
-        return Map.of("mensaje", "Hola " + usuario + ", el backend validó tu token correctamente.");
+        Map<String, Object> claims = new LinkedHashMap<>();
+        claims.put("subject", jwt.getSubject());
+        claims.put("issuer", jwt.getIssuer());
+        claims.put("audience", jwt.getAudience());
+        claims.put("issuedAt", jwt.getIssuedAt());
+        claims.put("expiresAt", jwt.getExpiresAt());
+        claims.put("nombre", jwt.getClaimAsString("name"));
+        claims.put("correo", jwt.getClaimAsString("email"));
+
+        Map<String, Object> respuesta = new LinkedHashMap<>();
+        respuesta.put("mensaje", "Hola " + usuario + ", el backend validó tu token correctamente.");
+        respuesta.put("jwtClaims", claims);
+        return respuesta;
     }
 
     @GetMapping
