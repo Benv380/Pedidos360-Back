@@ -31,8 +31,8 @@ public class SecurityConfig {
     @Value("${azure.ad.audiences}")
     private String audiencesCsv;
 
-    @Value("${app.cors.allowed-origin}")
-    private String allowedOrigin;
+    @Value("${app.cors.allowed-origins}")
+    private String allowedOriginsCsv;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -68,7 +68,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(allowedOrigin));
+        configuration.setAllowedOrigins(Arrays.asList(allowedOriginsCsv.split(",")));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
